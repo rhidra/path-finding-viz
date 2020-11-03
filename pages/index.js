@@ -1,6 +1,7 @@
 import { Flex, Box, DarkMode } from '@chakra-ui/core';
 import Console from '../components/console';
 import Controls from '../components/controls';
+import Map from '../components/map';
 
 export default function Home() {
   return (
@@ -19,7 +20,7 @@ export default function Home() {
           </Box>
         </Flex>
         <Box flex={.8}>
-
+          <Map/>
         </Box>
       </Flex>
     </DarkMode>
