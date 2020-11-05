@@ -13,24 +13,6 @@ export function dist(a, b) {
   return Math.sqrt((b[0] - a[0]) * (b[0] - a[0]) + (b[1] - a[1]) * (b[1] - a[1]));
 }
 
-// Extract index limits in a grid for the intersection with a polygon
-export function getGridPolygonBoundaries(poly, cellSize) {
-  const [[x1, y1], [x2, y2]] = getPolygonBoundaries(poly);
-  return [[Math.floor(x1 / cellSize), Math.floor(y1 / cellSize)], [Math.floor(x2 / cellSize), Math.floor(y2 / cellSize)]];
-}
-
-// Extract rectangle boundary of a polygon 
-export function getPolygonBoundaries(poly) {
-  let [minX, maxX, minY, maxY] = [poly[0][0], poly[0][0], poly[0][1], poly[0][1]];
-  poly.forEach(([x, y]) => {
-    maxX = Math.max(maxX, x);
-    minX = Math.min(minX, x);
-    maxY = Math.max(maxY, y);
-    minY = Math.min(minY, y);
-  });
-  return [[minX, minY], [maxX, maxY]];
-}
-
 // Return true if a point is located inside a polygon
 // ref: https://stackoverflow.com/questions/22521982/check-if-point-is-inside-a-polygon
 export function pointInPolygon(pt, poly) {

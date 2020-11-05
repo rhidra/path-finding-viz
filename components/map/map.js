@@ -20,32 +20,6 @@ export default function Map({cellSize}) {
     setCells(c);
   }, [grid]);
 
-  useEffect(() => {
-    const wGrid = Math.floor(ref.current.clientWidth / cellSize);
-    const hGrid = Math.floor(ref.current.clientHeight / cellSize);
-    let g;
-    if (grid.length !== wGrid || grid[0].length !== hGrid) {
-      g = new Array(wGrid).fill(0).map(() => new Array(hGrid).fill(0).map(() => false));
-    } else {
-      g = grid.map(col => col.slice());
-    }
-    if (polygons.length === 0) { return; }
-
-    const poly = polygons[polygons.length-1];
-    const [[x1, y1], [x2, y2]] = getGridPolygonBoundaries(poly, cellSize);
-    for (let i = x1; i < x2; ++i) {
-      for (let j = y1; j < y2; ++j) {
-        if (pointInPolygon([i*cellSize, j*cellSize], poly)) {
-          g[i][j] = true;
-          g[i-1][j] = true;
-          g[i][j-1] = true;
-          g[i-1][j-1] = true;
-        }
-      }
-    }
-    setGrid(g);
-  }, [polygons])
-
   function handleClick(e) {
     const rect = ref.current.getBoundingClientRect();
     const doc = document.documentElement;
