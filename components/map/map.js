@@ -1,31 +1,23 @@
 import { Box } from '@chakra-ui/core';
 import React, { useEffect, useRef, useState } from 'react';
 import { dist, getGridPolygonBoundaries, pointInPolygon } from '../../utils/math';
-import Cell from './cell';
+import Node from './node';
 import PendingPolygon from './pending-polygon';
 import Polygons from './polygons';
+import Path from './path';
 
 const CLOSING_POLY_RADIUS = 20;
 
-export default function Map({cellSize}) {
+export default function Map({cellSize, start, goal, polygons, onSetPolygons, path, nodes}) {
   const ref = useRef(null);
-  const [cells, setCells] = useState([]);
-  const [polygons, setPolygons] = useState([]);
   const [pendingPolygon, setPendingPolygon] = useState([]);
-  const [grid, setGrid] = useState([[]]);
-
-  useEffect(() => {
-    const c = [];
-    grid.forEach((col, x) => col.forEach((cell, y) => cell ? c.push({x, y}) : null));
-    setCells(c);
-  }, [grid]);
 
   function handleClick(e) {
     const rect = ref.current.getBoundingClientRect();
     const doc = document.documentElement;
     const [x, y] = [e.clientX - (rect.left + window.pageXOffset) - doc.clientLeft, e.clientY - (rect.top + window.pageYOffset) - doc.clientTop];
     if (pendingPolygon.length >= 3 && dist(pendingPolygon[0], [x, y]) < CLOSING_POLY_RADIUS) {
-      setPolygons(polygons.concat([pendingPolygon]));
+      onSetPolygons(polygons.concat([pendingPolygon]));
       setPendingPolygon([]);
     } else {
       setPendingPolygon(pendingPolygon.concat([[x, y]]));
@@ -41,12 +33,16 @@ export default function Map({cellSize}) {
         w="100%" h="100%"
         onClick={e => handleClick(e)}
       >
-      {cells.map(({x, y}) => (
-        <Cell key={`${x}-${y}`} cellSize={cellSize} x={x} y={y}/>
-      ))}
-      
+      {start && 
+        <Node type="start" x={start[0]} y={start[1]} cellSize={cellSize}/>
+      }
+      {goal && 
+        <Node type="goal" x={goal[0]} y={goal[1]} cellSize={cellSize}/>
+      }
+
       <Box position="relative" h="100%" zIndex="5">
         <svg width="100%" height="100%">
+          <Path points={path} cellSize={cellSize}/>
           <Polygons polygons={polygons}/>
           <PendingPolygon points={pendingPolygon}/>
         </svg>

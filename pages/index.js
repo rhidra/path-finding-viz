@@ -4,19 +4,30 @@ import Console from '../components/console';
 import Controls from '../components/controls';
 import Map from '../components/map/map';
 import {phiStar} from '../lib/phi-star';
-
-const CELL_SIZE = 10;
+import { Config } from '../utils/config';
 
 export default function Home() {
+  const ref = useRef(null);
+  const [config, setConfig] = useState(new Config());
+  const [dims, setDims] = useState([10, 10]);
+  const [polygons, setPolygons] = useState([]);
+  const [start, setStart] = useState([10, 10]);
+  const [goal, setGoal] = useState([100, 50]);
+  const [path, setPath] = useState([]);
+  const [nodes, setNodes] = useState([]);
+
+  useEffect(() => {
+    const wGrid = Math.floor(ref.current.clientWidth / config.cellSize);
+    const hGrid = Math.floor(ref.current.clientHeight / config.cellSize);
+    setDims([wGrid, hGrid])
+  }, [])
 
   function handleStartPathFinding() {
     console.log('Start Phi* algorithm !');
-    phiStar();
-  }
-
-  function handleGenerateObstacles() {
-    let g = grid.map(col => col.map(() => Math.random() < .2));
-    setGrid(g);
+    const [path, nodes] = phiStar(start, goal, dims[0], dims[1], polygons, config);
+    console.log(path);
+    setPath(path);
+    setNodes(nodes);
   }
 
   return (
@@ -25,8 +36,8 @@ export default function Home() {
         <Flex flex={.2} direction="row" bg="gray.800">
           <Box flex={.6}>
             <Controls 
-                onChange={e => console.log(e)}
-                onGenerateObstacles={() => handleGenerateObstacles()}
+                onChange={c => setConfig(c)}
+                onGenerateObstacles={() => {}}
                 onFindPath={() => handleStartPathFinding()}
                 onStartRobot={() => console.log('Start Robot !')}
               />
@@ -35,8 +46,10 @@ export default function Home() {
             <Console/>
           </Box>
         </Flex>
-        <Box flex={.8}>
-          <Map cellSize={CELL_SIZE}/>
+        <Box flex={.8} ref={ref}>
+          <Map {...{...config, start, goal, polygons, path, nodes}}
+                onSetPolygons={polygons => setPolygons(polygons)}
+          />
         </Box>
       </Flex>
     </DarkMode>
