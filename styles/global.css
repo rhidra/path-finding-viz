@@ -1,3 +1,7 @@
 .pointer {
   cursor: pointer;
 }
+
+polygon:hover {
+  opacity: .7;
+}

@@ -7,9 +7,14 @@ export default function Polygons({polygons}) {
   return (
     <>
     {polygons.map((poly, key) => (
-      <polygon key={key} 
-              points={`${poly.map(([x, y]) => `${x},${y} `)}`} 
-              fill={colorFromKey(key)} opacity=".5" stroke="black"/>
+      <polygon 
+        key={key} 
+        points={`${poly.map(([x, y]) => `${x},${y} `)}`} 
+        fill={colorFromKey(key)} 
+        opacity=".5"
+        stroke="black" 
+        className="pointer"
+      />
     ))}
     </>
   );

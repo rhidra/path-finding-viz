@@ -1,10 +1,13 @@
 import { Circle } from "@chakra-ui/core";
+import { useState } from "react";
 
 export default function Node({cellSize, x, y, type}) {
   const styles = type === 'start' ? {
     bg: 'red.500',
+    cursor: 'pointer',
   } : type === 'goal' ? {
-    bg: 'blue.500'
+    bg: 'blue.500',
+    cursor: 'pointer',
   } : {bg: 'purple.700'};
 
   return (
