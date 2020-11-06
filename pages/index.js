@@ -23,9 +23,7 @@ export default function Home() {
   }, [])
 
   function handleStartPathFinding() {
-    console.log('Start Phi* algorithm !');
     const [path, nodes] = phiStar(start, goal, dims[0], dims[1], polygons, config);
-    console.log(path);
     setPath(path);
     setNodes(nodes);
   }
@@ -47,9 +45,7 @@ export default function Home() {
           </Box>
         </Flex>
         <Box flex={.8} ref={ref}>
-          <Map {...{...config, start, goal, polygons, path, nodes}}
-                onSetPolygons={polygons => setPolygons(polygons)}
-          />
+          <Map {...{...config, start, goal, polygons, path, nodes}} onSetPolygons={polygons => setPolygons(polygons)}/>
         </Box>
       </Flex>
     </DarkMode>
