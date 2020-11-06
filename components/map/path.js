@@ -1,30 +1,36 @@
 import { useEffect, useState } from "react";
 
-export default function Path({path, nodes, cellSize}) {
-  const [nodesPts, setNodesPts] = useState([]);
+export default function Path({path, nodes, cellSize, animSpeed}) {
+  const [countNodes, setCountNodes] = useState(0);
 
-  useEffect(() => setNodesPts(nodes.map(node => formatParent(node))), [nodes]);
-
-  const formatParent = (node) => {
-    const pts = `${node.pos[0] * cellSize},${node.pos[1] * cellSize} `;
-    if (!node.parent) {
-      return pts;
+  useEffect(() => {
+    const id = setInterval(() => setCountNodes(c => c < nodes.length ? c + (animSpeed || 5) : c), 50);
+    return () => {
+      clearInterval(id);
+      setCountNodes(0);
     }
-    return `${pts}${formatParent(node.parent)}`;
-  }
+  }, [nodes]);
 
   return (
     <>
-    
-    {path.map(([x, y], i) => (
+    {countNodes >= nodes.length && path.map(([x, y], i) => (
       <circle cx={x*cellSize} cy={y*cellSize} r="2" key={i} stroke="#bee3f8"/>
     ))}
 
-    {nodesPts.map((node, i) => (
-      <polyline key={i} points={node} stroke="green" fill="none"/>
-    ))}
-
-    <polyline points={`${path.map(([x, y]) => `${x*cellSize},${y*cellSize} `)}`} stroke="red" fill="none" strokeWidth="3"/>
+    {nodes.map((node, i) => i < countNodes && node.parent ? (
+      <line 
+        key={i} 
+        x1={node.parent.pos[0] * cellSize}
+        y1={node.parent.pos[1] * cellSize}
+        x2={node.pos[0] * cellSize} 
+        y2={node.pos[1] * cellSize} 
+        stroke="green"
+      />
+    ) : null)}
+    
+    {countNodes >= nodes.length && 
+      <polyline points={`${path.map(([x, y]) => `${x*cellSize},${y*cellSize} `)}`} stroke="red" fill="none" strokeWidth="3"/>
+    }
     </>
   );
 }

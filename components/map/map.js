@@ -8,7 +8,7 @@ import Path from './path';
 
 const CLICK_RADIUS = 20;
 
-export default function Map({cellSize, start, goal, polygons, onSetPolygons, path, nodes, onSetStart, onSetGoal}) {
+export default function Map({cellSize, start, goal, polygons, onSetPolygons, path, nodes, onSetStart, onSetGoal, animSpeed}) {
   const ref = useRef(null);
   const [pendingPolygon, setPendingPolygon] = useState([]);
   const [holding, setHolding] = useState(false);
@@ -80,7 +80,7 @@ export default function Map({cellSize, start, goal, polygons, onSetPolygons, pat
 
       <Box position="relative" h="100%" zIndex="5">
         <svg width="100%" height="100%">
-          <Path path={path} nodes={nodes} cellSize={cellSize}/>
+          <Path {...{cellSize, nodes, path, animSpeed}}/>
           <Polygons polygons={polygons}/>
           <PendingPolygon points={pendingPolygon}/>
         </svg>
