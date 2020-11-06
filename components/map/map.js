@@ -6,21 +6,50 @@ import PendingPolygon from './pending-polygon';
 import Polygons from './polygons';
 import Path from './path';
 
-const CLOSING_POLY_RADIUS = 20;
+const CLICK_RADIUS = 20;
 
-export default function Map({cellSize, start, goal, polygons, onSetPolygons, path, nodes}) {
+export default function Map({cellSize, start, goal, polygons, onSetPolygons, path, nodes, onSetStart, onSetGoal}) {
   const ref = useRef(null);
   const [pendingPolygon, setPendingPolygon] = useState([]);
+  const [holding, setHolding] = useState(false);
 
-  function handleClick(e) {
+  function extractMouseCoord(e) {
     const rect = ref.current.getBoundingClientRect();
     const doc = document.documentElement;
-    const [x, y] = [e.clientX - (rect.left + window.pageXOffset) - doc.clientLeft, e.clientY - (rect.top + window.pageYOffset) - doc.clientTop];
-    if (pendingPolygon.length >= 3 && dist(pendingPolygon[0], [x, y]) < CLOSING_POLY_RADIUS) {
-      onSetPolygons(polygons.concat([pendingPolygon]));
-      setPendingPolygon([]);
+    return [e.clientX - (rect.left + window.pageXOffset) - doc.clientLeft, e.clientY - (rect.top + window.pageYOffset) - doc.clientTop];
+  }
+
+  function handleClick(e) {
+    const [x, y] = extractMouseCoord(e);
+
+    if (e.type === 'mousedown') {
+      if (dist([start[0]*cellSize, start[1]*cellSize], [x, y]) < CLICK_RADIUS) {
+        setHolding('start');
+      } else if (dist([goal[0]*cellSize, goal[1]*cellSize], [x, y]) < CLICK_RADIUS) {
+        setHolding('goal');
+      }
     } else {
-      setPendingPolygon(pendingPolygon.concat([[x, y]]));
+      if (holding === 'start') {
+        setHolding(false);
+      } else if (holding === 'goal') {
+        setHolding(false);
+      } else if (pendingPolygon.length >= 3 && dist(pendingPolygon[0], [x, y]) < CLICK_RADIUS) {
+        onSetPolygons(polygons.concat([pendingPolygon]));
+        setPendingPolygon([]);
+      } else {
+        setPendingPolygon(pendingPolygon.concat([[x, y]]));
+      }
+    }
+  }
+
+  function handleMouseMove(e) {
+    if (!holding) { return; }
+
+    const [x, y] = extractMouseCoord(e);
+    if (holding === 'start') {
+      onSetStart([Math.floor(x / cellSize), Math.floor(y / cellSize)]);
+    } else if (holding === 'goal') {
+      onSetGoal([Math.floor(x / cellSize), Math.floor(y / cellSize)]);
     }
   }
 
@@ -31,9 +60,11 @@ export default function Map({cellSize, start, goal, polygons, onSetPolygons, pat
         bg="linear-gradient(rgba(74, 85, 104, .3) 1px, transparent 1px), linear-gradient(90deg, rgba(74, 85, 104, .3) 1px, transparent 1px)" 
         bgSize={`${cellSize}px ${cellSize}px`}
         w="100%" h="100%"
-        onClick={e => handleClick(e)}
+        onMouseMove={e => handleMouseMove(e)}
+        onMouseDown={e => handleClick(e)}
+        onMouseUp={e => handleClick(e)}
       >
-      
+
       {start && 
         <Node type="start" x={start[0]} y={start[1]} cellSize={cellSize}/>
       }

@@ -11,7 +11,7 @@ export default function Home() {
   const [config, setConfig] = useState(new Config());
   const [dims, setDims] = useState([10, 10]);
   const [polygons, setPolygons] = useState([]);
-  const [start, setStart] = useState([10, 10]);
+  const [start, setStart] = useState([5, 5]);
   const [goal, setGoal] = useState([100, 50]);
   const [path, setPath] = useState([]);
   const [nodes, setNodes] = useState([]);
@@ -45,7 +45,10 @@ export default function Home() {
           </Box>
         </Flex>
         <Box flex={.8} ref={ref}>
-          <Map {...{...config, start, goal, polygons, path, nodes}} onSetPolygons={polygons => setPolygons(polygons)}/>
+          <Map {...{...config, start, goal, polygons, path, nodes}} 
+              onSetPolygons={polygons => setPolygons(polygons)}
+              onSetStart={s => setStart(s)}
+              onSetGoal={g => setGoal(g)}/>
         </Box>
       </Flex>
     </DarkMode>
