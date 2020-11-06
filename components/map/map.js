@@ -21,17 +21,18 @@ export default function Map({cellSize, start, goal, polygons, onSetPolygons, pat
 
   function handleClick(e) {
     const [x, y] = extractMouseCoord(e);
+    let p = null;
 
     if (e.type === 'mousedown') {
       if (dist([start[0]*cellSize, start[1]*cellSize], [x, y]) < CLICK_RADIUS) {
         setHolding('start');
       } else if (dist([goal[0]*cellSize, goal[1]*cellSize], [x, y]) < CLICK_RADIUS) {
         setHolding('goal');
+      } else if (polygons.some(poly => {if (pointInPolygon([x, y], poly)) {p = poly; return true} else return false})) {
+        setHolding({poly: p, click: [x, y], idx: polygons.indexOf(p)});
       }
     } else {
-      if (holding === 'start') {
-        setHolding(false);
-      } else if (holding === 'goal') {
+      if (holding === 'start' || holding === 'goal' || (typeof holding === 'object' && holding !== null)) {
         setHolding(false);
       } else if (pendingPolygon.length >= 3 && dist(pendingPolygon[0], [x, y]) < CLICK_RADIUS) {
         onSetPolygons(polygons.concat([pendingPolygon]));
@@ -50,6 +51,11 @@ export default function Map({cellSize, start, goal, polygons, onSetPolygons, pat
       onSetStart([Math.floor(x / cellSize), Math.floor(y / cellSize)]);
     } else if (holding === 'goal') {
       onSetGoal([Math.floor(x / cellSize), Math.floor(y / cellSize)]);
+    } else if ('poly' in holding) {
+      const half1 = polygons.slice(0, holding.idx);
+      const half2 = polygons.slice(holding.idx + 1);
+      const poly = holding.poly.map(pt => [pt[0] + x - holding.click[0], pt[1] + y - holding.click[1]]);
+      onSetPolygons([...half1, poly, ...half2]);
     }
   }
 

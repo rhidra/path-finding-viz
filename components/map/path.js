@@ -7,10 +7,10 @@ export default function Path({path, nodes, cellSize}) {
 
   const formatParent = (node) => {
     const pts = `${node.pos[0] * cellSize},${node.pos[1] * cellSize} `;
-    if (!node.local) {
+    if (!node.parent) {
       return pts;
     }
-    return `${pts}${formatParent(node.local)}`;
+    return `${pts}${formatParent(node.parent)}`;
   }
 
   return (
