@@ -33,6 +33,7 @@ export default function Map({cellSize, start, goal, polygons, onSetPolygons, pat
         w="100%" h="100%"
         onClick={e => handleClick(e)}
       >
+      
       {start && 
         <Node type="start" x={start[0]} y={start[1]} cellSize={cellSize}/>
       }
@@ -42,7 +43,7 @@ export default function Map({cellSize, start, goal, polygons, onSetPolygons, pat
 
       <Box position="relative" h="100%" zIndex="5">
         <svg width="100%" height="100%">
-          <Path points={path} cellSize={cellSize}/>
+          <Path path={path} nodes={nodes} cellSize={cellSize}/>
           <Polygons polygons={polygons}/>
           <PendingPolygon points={pendingPolygon}/>
         </svg>

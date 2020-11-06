@@ -10,11 +10,11 @@ export default function Node({cellSize, x, y, type}) {
   return (
     <Circle 
         {...styles}
-        size={`${cellSize}px`}
+        size={`${cellSize + 2}px`}
         pos="absolute"
         top={`${cellSize*y}px`}
         left={`${cellSize*x}px`}
-        zIndex="3"
+        zIndex="10"
         transform="translate(-50%, -50%)"
       >
     </Circle>
