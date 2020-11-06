@@ -74,6 +74,6 @@ export function phi(a, b, c) {
   a = a instanceof Node ? a.pos : a;
   b = b instanceof Node ? b.pos : b;
   c = c instanceof Node ? c.pos : c;
-  let angle = (180./Math.pi) * (-Math.atan2(a[1] - b[1], a[0] - b[0]) + Math.atan2(c[1] - b[1], c[0] - b[0]));
+  let angle = (180./Math.PI) * (-Math.atan2(a[1] - b[1], a[0] - b[0]) + Math.atan2(c[1] - b[1], c[0] - b[0]));
   return angle > 180 ? ((angle % 180) - 180) : angle;
 }
