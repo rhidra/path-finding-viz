@@ -16,6 +16,8 @@ export default function Home() {
   const [path, setPath] = useState([]);
   const [nodes, setNodes] = useState([]);
 
+  console.log(config)
+
   useEffect(() => {
     const wGrid = Math.floor(ref.current.clientWidth / config.cellSize);
     const hGrid = Math.floor(ref.current.clientHeight / config.cellSize);
@@ -34,10 +36,11 @@ export default function Home() {
         <Flex flex={.2} direction="row" bg="gray.800">
           <Box flex={.6}>
             <Controls 
-                onChange={c => setConfig(c)}
+                onChange={c => {console.log(c.animSpeed); setPath(path); setConfig(a => Object.assign(a, c))}}
                 onGenerateObstacles={() => {}}
                 onFindPath={() => handleStartPathFinding()}
                 onStartRobot={() => console.log('Start Robot !')}
+                config={config}
               />
           </Box>
           <Box flex={.4} bg="gray.600">

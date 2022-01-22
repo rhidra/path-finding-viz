@@ -1,15 +1,23 @@
 import { useEffect, useState } from "react";
 
 export default function Path({path, nodes, cellSize, animSpeed}) {
-  const [countNodes, setCountNodes] = useState(0);
+  const [countNodes, setCountNodes] = useState(10000);
 
-  useEffect(() => {
-    const id = setInterval(() => setCountNodes(c => c < nodes.length ? c + (animSpeed || 5) : c), 50);
-    return () => {
-      clearInterval(id);
-      setCountNodes(0);
-    }
-  }, [nodes]);
+  // useEffect(() => {
+  //   const id = setInterval(() => setCountNodes(c => {
+  //     if (c < nodes.length) {
+  //       return c + (animSpeed || 5);
+  //     } else {
+  //       clearInterval(id);
+  //       return c;
+  //     }
+  //   }), 50);
+
+  //   return () => {
+  //     clearInterval(id);
+  //     setCountNodes(0);
+  //   }
+  // }, [nodes]);
 
   return (
     <>
